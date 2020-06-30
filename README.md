@@ -4,7 +4,7 @@ Docker Minecraft PaperMC server 1.16.1, 1.15.2 (legacy), 1.14.4 (legacy) or 1.13
 
 ## Quick Start
 ```sh
-docker pull marctv/minecraft-papermc-server
+docker pull potto/minecraft-papermc-server
 ```
 
 ```sh
