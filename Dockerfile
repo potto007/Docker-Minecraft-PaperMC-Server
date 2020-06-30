@@ -1,5 +1,3 @@
-# syntax = docker/dockerfile:1.0-experimental
-
 ########################################################
 ############## We use a java base image ################
 ########################################################
@@ -26,8 +24,7 @@ RUN groupadd --gid ${UID} ${USER} && \
 USER ${USER}
 
 # Run paperclip and obtain patched jar
-RUN --mount=type=cache,uid=1000,gid=1000,target=/opt/minecraft/world /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
-# RUN /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
+RUN timeout --signal=9 30 /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
 
 # Copy built jar
 RUN mv /opt/minecraft/cache/patched*.jar paperspigot.jar
