@@ -1,9 +1,14 @@
+# syntax = docker/dockerfile:1.0-experimental
+
 ########################################################
 ############## We use a java base image ################
 ########################################################
 FROM openjdk:11 AS build
 
 LABEL maintainer="Paul Otto <paul@ottoops.com>"
+
+ARG USER=minecraft
+ARG UID=1000
 
 ARG paperspigot_ci_url=https://papermc.io/api/v1/paper/1.16.1/latest/download
 ENV PAPERSPIGOT_CI_URL=$paperspigot_ci_url
@@ -14,13 +19,15 @@ WORKDIR /opt/minecraft
 ADD ${PAPERSPIGOT_CI_URL} paperclip.jar
 
 # User
-RUN useradd -ms /bin/bash minecraft && \
-    chown minecraft /opt/minecraft -R
+RUN groupadd --gid ${UID} ${USER} && \
+    useradd --uid ${UID} --gid ${UID} --shell /bin/bash ${USER} && \
+    chown ${UID}:${UID} /opt/minecraft -R
 
-USER minecraft
+USER ${USER}
 
 # Run paperclip and obtain patched jar
-RUN /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
+RUN --mount=type=cache,uid=1000,gid=1000,target=/opt/minecraft/world /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
+# RUN /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
 
 # Copy built jar
 RUN mv /opt/minecraft/cache/patched*.jar paperspigot.jar
