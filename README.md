@@ -1,6 +1,6 @@
 # Docker Minecraft PaperMC Server
 
-Docker Minecraft PaperMC server 1.15.2, 1.14.4 (legacy) or 1.13.2 (legacy) 
+Docker Minecraft PaperMC server 1.16.1, 1.15.2 (legacy), 1.14.4 (legacy) or 1.13.2 (legacy) 
 
 ## Quick Start
 ```sh
@@ -14,7 +14,7 @@ docker run \
   -e MEMORYSIZE='1G' \
   -v /homes/joe/mcserver:/data:rw \
   -p 25565:25565 \
--i marctv/minecraft-papermc-server:latest
+-i potto/minecraft-papermc-server:latest
 ```
 ```sh
 docker attach mcserver
@@ -28,7 +28,7 @@ You can use volumes to store data persistantly, for example:
 docker run --rm \
 	-p 25565:25565 \
 	-v <full path to folder where you want to store the server files>:/data:rw \
-	marctv/minecraft-papermc-server:latest
+	potto/minecraft-papermc-server:latest
  ```
 
 ## Environment variable
