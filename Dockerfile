@@ -3,9 +3,9 @@
 ########################################################
 FROM openjdk:11 AS build
 
-MAINTAINER Marc Tönsing <marc@marc.tv>
+LABEL maintainer="Paul Otto <paul@ottoops.com>"
 
-ARG paperspigot_ci_url=https://papermc.io/api/v1/paper/1.15.2/latest/download
+ARG paperspigot_ci_url=https://papermc.io/api/v1/paper/1.16.1/latest/download
 ENV PAPERSPIGOT_CI_URL=$paperspigot_ci_url
 
 WORKDIR /opt/minecraft
@@ -20,7 +20,7 @@ RUN useradd -ms /bin/bash minecraft && \
 USER minecraft
 
 # Run paperclip and obtain patched jar
-RUN /usr/local/openjdk-11/bin/java -jar /opt/minecraft/paperclip.jar; exit 0
+RUN /usr/local/openjdk-11/bin/java -Dcom.mojang.eula.agree=true -jar /opt/minecraft/paperclip.jar; exit 0
 
 # Copy built jar
 RUN mv /opt/minecraft/cache/patched*.jar paperspigot.jar
@@ -37,13 +37,10 @@ WORKDIR /data
 COPY --from=build /opt/minecraft/paperspigot.jar /opt/minecraft/paperspigot.jar
 
 # Install and run rcon
-ARG RCON_CLI_VER=1.4.6
+ARG RCON_CLI_VER=1.4.8
 ADD https://github.com/itzg/rcon-cli/releases/download/${RCON_CLI_VER}/rcon-cli_${RCON_CLI_VER}_linux_amd64.tar.gz /tmp/rcon-cli.tgz
 RUN tar -x -C /usr/local/bin -f /tmp/rcon-cli.tgz rcon-cli && \
   rm /tmp/rcon-cli.tgz
-
-# Obtain server config
-ADD server.properties /opt/minecraft/server.properties
 
 # Volumes for the external data (Server, World, Config...)
 VOLUME "/data"
